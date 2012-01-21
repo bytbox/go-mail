@@ -11,15 +11,31 @@ func crlf(s string) string {
 }
 
 type getHeadersTest struct {
-
+	orig string
+	hdrs []string
 }
 
 var getHeadersTests = []getHeadersTest{
-
+	{
+		``,
+		[]string{``},
+	},
 }
 
 func TestGetHeaders(t *testing.T) {
-
+	for i, ht := range getHeadersTests {
+		hs := getHeaders(ht.orig)
+		if len(hs) != len(ht.hdrs) {
+			t.Errorf(`%d. getHeader returned %d headers, wanted %d`,
+				i, len(hs), len(ht.hdrs))
+		}
+		for j, h := range hs {
+			if h != ht.hdrs[j] {
+				t.Errorf(`%d. getHeader [%d] gave %s, wanted %s`,
+					i, j, h, ht.hdrs[j])
+			}
+		}
+	}
 }
 
 type splitHeadersTest struct {
