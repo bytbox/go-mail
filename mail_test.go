@@ -13,27 +13,57 @@ func crlf(s string) string {
 type getHeadersTest struct {
 	orig string
 	hdrs []string
+	body string
 }
 
 var getHeadersTests = []getHeadersTest{
 	{
 		``,
-		[]string{``},
+		[]string{},
+		``,
+	},
+	{
+		`a: b`,
+		[]string{`a: b`},
+		``,
+	},
+	{
+		crlf(`a: b
+`),
+		[]string{`a: b`},
+		``,
+	},
+	{
+		crlf(`a: b
+c: d
+e: f
+
+Body goes
+here.
+`),
+		[]string{`a: b`, `c: d`, `e: f`},
+		crlf(`Body goes
+here.
+`),
 	},
 }
 
 func TestGetHeaders(t *testing.T) {
 	for i, ht := range getHeadersTests {
-		hs := getHeaders(ht.orig)
+		hs, b := getHeaders(ht.orig)
 		if len(hs) != len(ht.hdrs) {
-			t.Errorf(`%d. getHeader returned %d headers, wanted %d`,
+			t.Errorf(`%d. getHeaders returned %d headers, wanted %d`,
 				i, len(hs), len(ht.hdrs))
 		}
 		for j, h := range hs {
 			if h != ht.hdrs[j] {
-				t.Errorf(`%d. getHeader [%d] gave %s, wanted %s`,
+				t.Errorf(`%d. getHeaders [%d] gave "%s", wanted "%s"`,
 					i, j, h, ht.hdrs[j])
 			}
+		}
+		if b != ht.body {
+			t.Errorf(`%d. getHeaders [body] gave "%s", wanted "%s"`,
+				i, b, ht.body)
 		}
 	}
 }

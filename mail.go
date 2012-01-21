@@ -14,7 +14,7 @@ func Parse(s string) (m Message) {
 	return
 }
 
-func getHeaders(s string) (hs []string) {
+func getHeaders(s string) (hs []string, body string) {
 	return
 }
 
