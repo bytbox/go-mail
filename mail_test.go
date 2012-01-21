@@ -18,17 +18,19 @@ type getHeadersTest struct {
 
 var getHeadersTests = []getHeadersTest{
 	{
-		``,
-		[]string{},
-		``,
-	},
-	{
 		`a: b`,
 		[]string{`a: b`},
 		``,
 	},
 	{
 		crlf(`a: b
+`),
+		[]string{`a: b`},
+		``,
+	},
+	{
+		crlf(`a: b
+
 `),
 		[]string{`a: b`},
 		``,
@@ -54,11 +56,12 @@ func TestGetHeaders(t *testing.T) {
 		if len(hs) != len(ht.hdrs) {
 			t.Errorf(`%d. getHeaders returned %d headers, wanted %d`,
 				i, len(hs), len(ht.hdrs))
-		}
-		for j, h := range hs {
-			if h != ht.hdrs[j] {
-				t.Errorf(`%d. getHeaders [%d] gave "%s", wanted "%s"`,
-					i, j, h, ht.hdrs[j])
+		} else {
+			for j, h := range hs {
+				if h != ht.hdrs[j] {
+					t.Errorf(`%d. getHeaders [%d] gave "%s", wanted "%s"`,
+						i, j, h, ht.hdrs[j])
+				}
 			}
 		}
 		if b != ht.body {
