@@ -16,11 +16,18 @@ type Message struct {
 }
 
 func Parse(s string) (m Message) {
+	hs, b := getHeaders(s)
+	m.Body = b
+	for _, hl := range hs {
+		k, v := splitHeader(hl)
+		h := Header{k, v}
+		m.RawHeaders = append(m.RawHeaders, h)
+	}
 	return
 }
 
 func getHeaders(s string) (hs []string, body string) {
-	// TODO this could be faster via a rewrite without strings
+	// TODO this could be faster via a rewrite without `strings'
 	ps := strings.SplitN(s, "\r\n\r\n", 2)
 	if len(ps) == 2 {
 		body = ps[1]
