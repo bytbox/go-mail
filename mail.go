@@ -21,7 +21,18 @@ func getHeaders(s string) (hs []string, body string) {
 		body = ps[1]
 	}
 	ls := strings.Split(strings.Trim(ps[0], "\r\n"), "\r\n")
-	hs = ls
+	i := 0
+	for i < len(ls) {
+		l := ls[i]
+		if l[0] == ' ' || l[0] == '\t' {
+			if len(hs) > 0 {
+				hs[len(hs)-1] += "\r\n" + l
+			} // TODO error
+		} else {
+			hs = append(hs, l)
+		}
+		i++
+	}
 	return
 }
 

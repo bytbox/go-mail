@@ -48,6 +48,13 @@ here.
 here.
 `),
 	},
+	{
+		crlf(`a: b
+ c`),
+		[]string{crlf(`a: b
+ c`)},
+		``,
+	},
 }
 
 func TestGetHeaders(t *testing.T) {
