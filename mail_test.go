@@ -44,15 +44,15 @@ Body goes
 here.
 `),
 		[]string{`a: b`, `c: d`, `e: f`},
-		crlf(`Body goes
+		`Body goes
 here.
-`),
+`,
 	},
 	{
 		crlf(`a: b
  c`),
-		[]string{crlf(`a: b
- c`)},
+		[]string{`a: b
+ c`},
 		``,
 	},
 }
