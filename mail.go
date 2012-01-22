@@ -7,7 +7,7 @@ import (
 )
 
 type Header struct {
-	key, value string
+	Key, Value string
 }
 
 type Message struct {
