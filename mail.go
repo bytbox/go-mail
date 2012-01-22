@@ -6,8 +6,13 @@ import (
 	"strings"
 )
 
-type Message struct {
+type Header struct {
+	key, value string
+}
 
+type Message struct {
+	RawHeaders []Header
+	Body       string
 }
 
 func Parse(s string) (m Message) {
