@@ -1,13 +1,10 @@
 // Package mail implements a parser for electronic mail messages as specified
 // in RFC2822.
-//
-// Although RFC2822 requires that all lines end in CRLF, this package will
-// accept just LF for compatibility with bufio.ReadLine; however, all output
-// from this package will use LF only.
 package mail
 
 import (
-	"strings"
+	"bytes"
+	"errors"
 )
 
 type Header struct {
@@ -19,48 +16,68 @@ type Message struct {
 	Body       string
 }
 
-func Parse(s string) (m Message) {
-	hs, b := getHeaders(s)
-	m.Body = b
-	for _, hl := range hs {
-		k, v := splitHeader(hl)
-		h := Header{k, v}
-		m.RawHeaders = append(m.RawHeaders, h)
-	}
-	return
+func isWSP(b byte) bool {
+	return b == ' ' || b == '\t'
 }
 
-func getHeaders(s string) (hs []string, body string) {
-	// TODO this could be faster via a rewrite without `strings'
+func Parse(s []byte) (m Message, e error) {
+	// parser states
+	const (
+		READY = iota
+		HKEY
+		HVWS
+		HVAL
+	)
 
-	// Use LF
-	s = strings.Replace(s, "\r\n", "\n", -1)
+	const (
+		CR = '\r'
+		LF = '\n'
+	)
+	CRLF := []byte{CR, LF}
 
-	ps := strings.SplitN(s, "\n\n", 2)
-	if len(ps) == 2 {
-		body = ps[1]
-	}
-	ls := strings.Split(strings.Trim(ps[0], "\n"), "\n")
-	i := 0
-	for i < len(ls) {
-		l := ls[i]
-		if l[0] == ' ' || l[0] == '\t' {
-			if len(hs) > 0 {
-				hs[len(hs)-1] += "\n" + l
-			} // TODO error
-		} else {
-			hs = append(hs, l)
+	state := READY
+	kstart, kend, vstart := 0, 0, 0
+	done := false
+
+	m.RawHeaders = []Header{}
+
+	for i := 0; i < len(s); i++ {
+		b := s[i]
+		switch state {
+		case READY:
+			if b == CR && i < len(s)-1 && s[i+1] == LF {
+				// we are at the beginning of an empty header
+				m.Body = string(s[i+2:])
+				done = true
+				goto Done
+			}
+			// otherwise this character is the first in a header
+			// key
+			kstart = i
+			state = HKEY
+		case HKEY:
+			if b == ':' {
+				kend = i
+				state = HVWS
+			}
+		case HVWS:
+			if !isWSP(b) {
+				vstart = i
+				state = HVAL
+			}
+		case HVAL:
+			if b == CR && i < len(s)-2 && s[i+1] == LF && !isWSP(s[i+2]) {
+				v := bytes.Replace(s[vstart:i], CRLF, nil, -1)
+				hdr := Header{string(s[kstart:kend]), string(v)}
+				m.RawHeaders = append(m.RawHeaders, hdr)
+				state = READY
+				i++
+			}
 		}
-		i++
 	}
-	return
-}
-
-func splitHeader(s string) (k, v string) {
-	// remove all CRLFs and split on the first colon
-	ps := strings.SplitN(s, ":", 2)
-	k = ps[0]
-	v = strings.Replace(strings.TrimSpace(ps[1]), "\n", "", -1)
-	v = strings.Replace(v, "\r", "", -1)
+Done:
+	if !done {
+		e = errors.New("unexpected EOF")
+	}
 	return
 }
