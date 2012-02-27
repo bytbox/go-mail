@@ -8,12 +8,12 @@ import (
 )
 
 type Header struct {
-	Key, Value string
+	Key, Value []byte
 }
 
 type Message struct {
 	RawHeaders []Header
-	Body       string
+	Body       []byte
 }
 
 func isWSP(b byte) bool {
@@ -47,7 +47,7 @@ func Parse(s []byte) (m Message, e error) {
 		case READY:
 			if b == CR && i < len(s)-1 && s[i+1] == LF {
 				// we are at the beginning of an empty header
-				m.Body = string(s[i+2:])
+				m.Body = s[i+2:]
 				done = true
 				goto Done
 			}
@@ -68,7 +68,7 @@ func Parse(s []byte) (m Message, e error) {
 		case HVAL:
 			if b == CR && i < len(s)-2 && s[i+1] == LF && !isWSP(s[i+2]) {
 				v := bytes.Replace(s[vstart:i], CRLF, nil, -1)
-				hdr := Header{string(s[kstart:kend]), string(v)}
+				hdr := Header{s[kstart:kend], v}
 				m.RawHeaders = append(m.RawHeaders, hdr)
 				state = READY
 				i++

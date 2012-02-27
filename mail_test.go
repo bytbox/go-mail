@@ -7,13 +7,9 @@ import (
 )
 
 // Converts all newlines to CRLFs.
-func crlf(s string) string {
-	return strings.Replace(s, "\n", "\r\n", -1)
+func crlf(s string) []byte {
+	return []byte(strings.Replace(s, "\n", "\r\n", -1))
 
-}
-
-func crlfb(s string) []byte {
-	return []byte(crlf(s))
 }
 
 type parseTest struct {
@@ -23,15 +19,15 @@ type parseTest struct {
 
 var parseTests = []parseTest{
 	parseTest{
-		msg: crlfb(`
+		msg: crlf(`
 `),
 		ret: Message{
 			RawHeaders: []Header{},
-			Body:       "",
+			Body:       crlf(""),
 		},
 	},
 	parseTest{
-		msg: crlfb(`
+		msg: crlf(`
 ab
 c
 `),
@@ -43,27 +39,30 @@ c
 		},
 	},
 	parseTest{
-		msg: crlfb(`a: b
+		msg: crlf(`a: b
 
 `),
 		ret: Message{
-			RawHeaders: []Header{Header{"a", "b"}},
-			Body:       "",
+			RawHeaders: []Header{Header{crlf("a"), crlf("b")}},
+			Body:       crlf(""),
 		},
 	},
 	parseTest{
-		msg: crlfb(`a: b
+		msg: crlf(`a: b
 c: def
  hi
 
 `),
 		ret: Message{
-			RawHeaders: []Header{Header{"a", "b"}, Header{"c", "def hi"}},
-			Body:       "",
+			RawHeaders: []Header{
+				Header{crlf("a"), crlf("b")},
+				Header{crlf("c"), crlf("def hi")},
+			},
+			Body:       crlf(``),
 		},
 	},
 	parseTest{
-		msg: crlfb(`a: b
+		msg: crlf(`a: b
 c: d fdsa
 ef:  as
 
@@ -71,11 +70,12 @@ hello, world
 `),
 		ret: Message{
 			RawHeaders: []Header{
-				Header{"a", "b"},
-				Header{"c", "d fdsa"},
-				Header{"ef", "as"},
+				Header{crlf("a"), crlf("b")},
+				Header{crlf("c"), crlf("d fdsa")},
+				Header{crlf("ef"), crlf("as")},
 			},
-			Body:       "hello, world\r\n",
+			Body:       crlf(`hello, world
+`),
 		},
 	},
 }
