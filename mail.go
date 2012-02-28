@@ -1,5 +1,9 @@
 // Package mail implements a parser for electronic mail messages as specified
 // in RFC2822.
+//
+// We allow both CRLF and LF to be used in the input, possibly mixed. Note that
+// in either case the Message.Body field will not contain normalized line
+// endings.
 package mail
 
 import (
@@ -51,6 +55,11 @@ func Parse(s []byte) (m Message, e error) {
 				done = true
 				goto Done
 			}
+			if b == LF {
+				m.Body = s[i+1:]
+				done = true
+				goto Done
+			}
 			// otherwise this character is the first in a header
 			// key
 			kstart = i
@@ -72,6 +81,11 @@ func Parse(s []byte) (m Message, e error) {
 				m.RawHeaders = append(m.RawHeaders, hdr)
 				state = READY
 				i++
+			} else if b == LF && i < len(s)-1 && !isWSP(s[i+1]) {
+				v := bytes.Replace(s[vstart:i], CRLF, nil, -1)
+				hdr := Header{s[kstart:kend], v}
+				m.RawHeaders = append(m.RawHeaders, hdr)
+				state = READY
 			}
 		}
 	}

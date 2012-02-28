@@ -78,6 +78,23 @@ hello, world
 `),
 		},
 	},
+	parseTest{
+		msg: []byte(`a: b
+c: d fdsa
+ef:  as
+
+hello, world
+`),
+		ret: Message{
+			RawHeaders: []Header{
+				Header{[]byte("a"), []byte("b")},
+				Header{[]byte("c"), []byte("d fdsa")},
+				Header{[]byte("ef"), []byte("as")},
+			},
+			Body:       []byte(`hello, world
+`),
+		},
+	},
 }
 
 func TestParse(t *testing.T) {
@@ -86,7 +103,7 @@ func TestParse(t *testing.T) {
 		ret := pt.ret
 		act, err := Parse(msg)
 		if err != nil {
-			t.Errorf("parse returned error")
+			t.Errorf("parse returned error for %#v", string(msg))
 		} else if !reflect.DeepEqual(act, ret) {
 			t.Errorf("incorrectly parsed message %#v as %#v; expected %#v", string(msg), act, ret)
 		}
