@@ -14,15 +14,15 @@ func crlf(s string) []byte {
 
 type parseTest struct {
 	msg []byte
-	ret Message
+	ret RawMessage
 }
 
 var parseTests = []parseTest{
 	parseTest{
 		msg: crlf(`
 `),
-		ret: Message{
-			RawHeaders: []Header{},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{},
 			Body:       crlf(""),
 		},
 	},
@@ -31,8 +31,8 @@ var parseTests = []parseTest{
 ab
 c
 `),
-		ret: Message{
-			RawHeaders: []Header{},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{},
 			Body:       crlf(`ab
 c
 `),
@@ -42,8 +42,8 @@ c
 		msg: crlf(`a: b
 
 `),
-		ret: Message{
-			RawHeaders: []Header{Header{crlf("a"), crlf("b")}},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{RawHeader{crlf("a"), crlf("b")}},
 			Body:       crlf(""),
 		},
 	},
@@ -53,10 +53,10 @@ c: def
  hi
 
 `),
-		ret: Message{
-			RawHeaders: []Header{
-				Header{crlf("a"), crlf("b")},
-				Header{crlf("c"), crlf("def hi")},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{
+				RawHeader{crlf("a"), crlf("b")},
+				RawHeader{crlf("c"), crlf("def hi")},
 			},
 			Body:       crlf(``),
 		},
@@ -68,11 +68,11 @@ ef:  as
 
 hello, world
 `),
-		ret: Message{
-			RawHeaders: []Header{
-				Header{crlf("a"), crlf("b")},
-				Header{crlf("c"), crlf("d fdsa")},
-				Header{crlf("ef"), crlf("as")},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{
+				RawHeader{crlf("a"), crlf("b")},
+				RawHeader{crlf("c"), crlf("d fdsa")},
+				RawHeader{crlf("ef"), crlf("as")},
 			},
 			Body:       crlf(`hello, world
 `),
@@ -85,11 +85,11 @@ ef:  as
 
 hello, world
 `),
-		ret: Message{
-			RawHeaders: []Header{
-				Header{[]byte("a"), []byte("b")},
-				Header{[]byte("c"), []byte("d fdsa")},
-				Header{[]byte("ef"), []byte("as")},
+		ret: RawMessage{
+			RawHeaders: []RawHeader{
+				RawHeader{[]byte("a"), []byte("b")},
+				RawHeader{[]byte("c"), []byte("d fdsa")},
+				RawHeader{[]byte("ef"), []byte("as")},
 			},
 			Body:       []byte(`hello, world
 `),
@@ -97,15 +97,15 @@ hello, world
 	},
 }
 
-func TestParse(t *testing.T) {
+func TestParseRaw(t *testing.T) {
 	for _, pt := range parseTests {
 		msg := pt.msg
 		ret := pt.ret
-		act, err := Parse(msg)
+		act, err := ParseRaw(msg)
 		if err != nil {
-			t.Errorf("parse returned error for %#v", string(msg))
+			t.Errorf("ParseRaw returned error for %#v", string(msg))
 		} else if !reflect.DeepEqual(act, ret) {
-			t.Errorf("incorrectly parsed message %#v as %#v; expected %#v", string(msg), act, ret)
+			t.Errorf("ParseRaw: incorrectly result from %#v as %#v; expected %#v", string(msg), act, ret)
 		}
 	}
 }

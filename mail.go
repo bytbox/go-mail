@@ -2,7 +2,7 @@
 // in RFC2822.
 //
 // We allow both CRLF and LF to be used in the input, possibly mixed. Note that
-// in either case the Message.Body field will not contain normalized line
+// in either case the RawMessage.Body field will not contain normalized line
 // endings.
 package mail
 
@@ -11,12 +11,12 @@ import (
 	"errors"
 )
 
-type Header struct {
+type RawHeader struct {
 	Key, Value []byte
 }
 
-type Message struct {
-	RawHeaders []Header
+type RawMessage struct {
+	RawHeaders []RawHeader
 	Body       []byte
 }
 
@@ -24,7 +24,7 @@ func isWSP(b byte) bool {
 	return b == ' ' || b == '\t'
 }
 
-func Parse(s []byte) (m Message, e error) {
+func ParseRaw(s []byte) (m RawMessage, e error) {
 	// parser states
 	const (
 		READY = iota
@@ -43,7 +43,7 @@ func Parse(s []byte) (m Message, e error) {
 	kstart, kend, vstart := 0, 0, 0
 	done := false
 
-	m.RawHeaders = []Header{}
+	m.RawHeaders = []RawHeader{}
 
 	for i := 0; i < len(s); i++ {
 		b := s[i]
@@ -77,13 +77,13 @@ func Parse(s []byte) (m Message, e error) {
 		case HVAL:
 			if b == CR && i < len(s)-2 && s[i+1] == LF && !isWSP(s[i+2]) {
 				v := bytes.Replace(s[vstart:i], CRLF, nil, -1)
-				hdr := Header{s[kstart:kend], v}
+				hdr := RawHeader{s[kstart:kend], v}
 				m.RawHeaders = append(m.RawHeaders, hdr)
 				state = READY
 				i++
 			} else if b == LF && i < len(s)-1 && !isWSP(s[i+1]) {
 				v := bytes.Replace(s[vstart:i], CRLF, nil, -1)
-				hdr := Header{s[kstart:kend], v}
+				hdr := RawHeader{s[kstart:kend], v}
 				m.RawHeaders = append(m.RawHeaders, hdr)
 				state = READY
 			}
