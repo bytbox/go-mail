@@ -1,15 +1,34 @@
 // Package mail implements a parser for electronic mail messages as specified
 // in RFC2822.
 //
-// We allow both CRLF and LF to be used in the input, possibly mixed. Note that
-// in either case the RawMessage.Body field will not contain normalized line
-// endings.
+// We allow both CRLF and LF to be used in the input, possibly mixed.
 package mail
 
 import (
 	"bytes"
 	"errors"
 )
+
+type Message struct {
+	FullHeaders []Header
+	Text        string
+}
+
+type Header struct {
+	Key, Value string
+}
+
+func Parse(s []byte) (m Message, e error) {
+	r, e := ParseRaw(s)
+	if e != nil {
+		return
+	}
+	return Process(r)
+}
+
+func Process(r RawMessage) (m Message, e error) {
+	return
+}
 
 type RawHeader struct {
 	Key, Value []byte

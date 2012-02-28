@@ -12,13 +12,13 @@ func crlf(s string) []byte {
 
 }
 
-type parseTest struct {
+type parseRawTest struct {
 	msg []byte
 	ret RawMessage
 }
 
-var parseTests = []parseTest{
-	parseTest{
+var parseRawTests = []parseRawTest{
+	parseRawTest{
 		msg: crlf(`
 `),
 		ret: RawMessage{
@@ -26,7 +26,7 @@ var parseTests = []parseTest{
 			Body:       crlf(""),
 		},
 	},
-	parseTest{
+	parseRawTest{
 		msg: crlf(`
 ab
 c
@@ -38,7 +38,7 @@ c
 `),
 		},
 	},
-	parseTest{
+	parseRawTest{
 		msg: crlf(`a: b
 
 `),
@@ -47,7 +47,7 @@ c
 			Body:       crlf(""),
 		},
 	},
-	parseTest{
+	parseRawTest{
 		msg: crlf(`a: b
 c: def
  hi
@@ -61,7 +61,7 @@ c: def
 			Body:       crlf(``),
 		},
 	},
-	parseTest{
+	parseRawTest{
 		msg: crlf(`a: b
 c: d fdsa
 ef:  as
@@ -78,7 +78,7 @@ hello, world
 `),
 		},
 	},
-	parseTest{
+	parseRawTest{
 		msg: []byte(`a: b
 c: d fdsa
 ef:  as
@@ -98,14 +98,57 @@ hello, world
 }
 
 func TestParseRaw(t *testing.T) {
-	for _, pt := range parseTests {
+	for _, pt := range parseRawTests {
 		msg := pt.msg
 		ret := pt.ret
 		act, err := ParseRaw(msg)
 		if err != nil {
 			t.Errorf("ParseRaw returned error for %#v", string(msg))
 		} else if !reflect.DeepEqual(act, ret) {
-			t.Errorf("ParseRaw: incorrectly result from %#v as %#v; expected %#v", string(msg), act, ret)
+			t.Errorf("ParseRaw: incorrect result from %#v as %#v; expected %#v", string(msg), act, ret)
+		}
+	}
+}
+
+type processTest struct {
+	name string
+	raw  RawMessage
+	ret  Message
+}
+
+var processTests = []processTest{
+
+}
+
+func TestProcess(t *testing.T) {
+	for _, pt := range processTests {
+		act, err := Process(pt.raw)
+		if err != nil {
+			t.Errorf("Parse returned error for %s", pt.name)
+		} else if !reflect.DeepEqual(act, pt.ret) {
+			t.Errorf("Parse: incorrect result from %#v as %#v; expected %#v", pt.name, act, pt.ret)
+		}
+	}
+}
+
+type parseTest struct {
+	msg []byte
+	ret Message
+}
+
+var parseTests = []parseTest{
+
+}
+
+func TestParse(t *testing.T) {
+	for _, pt := range parseTests {
+		msg := pt.msg
+		ret := pt.ret
+		act, err := Parse(msg)
+		if err != nil {
+			t.Errorf("Parse returned error for %#v", string(msg))
+		} else if !reflect.DeepEqual(act, ret) {
+			t.Errorf("Parse: incorrect result from %#v as %#v; expected %#v", string(msg), act, ret)
 		}
 	}
 }
