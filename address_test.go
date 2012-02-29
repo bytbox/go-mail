@@ -53,9 +53,9 @@ var parseAddressTests = []parseAddressTest{
 
 func TestParseAddress(t *testing.T) {
 	for _, pt := range parseAddressTests {
-		address, err := ParseAddress(pt.addrStr)
+		address, err := ParseAddress([]byte(pt.addrStr))
 		if err != nil {
-			t.Errorf("ParseAddress returned error for %#v", address)
+			t.Errorf("ParseAddress returned error for %#v", pt.addrStr)
 		} else if !reflect.DeepEqual(address, pt.addrRes) {
 			t.Errorf(
 				"ParseAddress: incorrect result for %#v: gave %#v; expected %#v",

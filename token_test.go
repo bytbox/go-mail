@@ -18,6 +18,17 @@ var tokenTests = []tokenTest{
 		`"Joe Q. Public" <john.q.public@example.com>`,
 		[]string{`"Joe Q. Public"`, `<`, `john.q.public`, `@`, `example.com`, `>`},
 	},
+	tokenTest{
+		`"Giant; \"Big\" Box" <sysservices@example.net>`,
+		[]string{
+			`"Giant; \"Big\" Box"`,
+			`<`,
+			`sysservices`,
+			`@`,
+			`example.net`,
+			`>`,
+		},
+	},
 }
 
 func TestTokenize(t *testing.T) {

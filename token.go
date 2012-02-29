@@ -10,10 +10,10 @@ import (
 // RFC5322. We're a bit loose here, so we might succeed in parsing material
 // that the RFC considers invalid.
 var (
-	dotAtomR = regexp.MustCompile("[a-zA-Z0-9!#$%&`*+\\-/=?^_'{|}~][a-zA-Z0-9.!#$%&`*+\\-/=?^_'{|}~]+")
-	atomR    = regexp.MustCompile("[a-zA-Z0-9!#$%&`*+\\-/=?^_'{|}~]+")
-	specialR = regexp.MustCompile(`[()<>\[\]:;@\,."]`)
-	qStringR = regexp.MustCompile(`"[^"]*"`)
+	dotAtomR = regexp.MustCompile("^[a-zA-Z0-9!#$%&`*+\\-/=?^_'{|}~][a-zA-Z0-9.!#$%&`*+\\-/=?^_'{|}~]+")
+	atomR    = regexp.MustCompile("^[a-zA-Z0-9!#$%&`*+\\-/=?^_'{|}~]+")
+	specialR = regexp.MustCompile(`^[()<>\[\]:;@\,."]`)
+	qStringR = regexp.MustCompilePOSIX(`^"([^"]|\\")*"`)
 )
 
 type token []byte
