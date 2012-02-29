@@ -58,7 +58,7 @@ func TestParseAddress(t *testing.T) {
 			t.Errorf("ParseAddress returned error for %#v", address)
 		} else if !reflect.DeepEqual(address, pt.addrRes) {
 			t.Errorf(
-				"ParseAddress; incorrect result for %#v: gave %#v; expected %#v",
+				"ParseAddress: incorrect result for %#v: gave %#v; expected %#v",
 				pt.addrStr, address, pt.addrRes)
 		}
 	}
