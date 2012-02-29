@@ -7,6 +7,13 @@ type Address interface {
 }
 
 type MailboxAddr struct {
+	name   string
+	local  string
+	domain string
+}
+
+func (ma *MailboxAddr) String() string {
+	return ""
 }
 
 type GroupAddr struct {
@@ -21,10 +28,12 @@ func ParseAddress(bs []byte) (Address, error) {
 	// If this is a group, it must end in a ";" token.
 	ltok := toks[len(toks)-1]
 	if len(ltok) == 1 && ltok[0] == ';' {
-
-	} else {
-
+		return nil, nil
 	}
+	return parseMailboxAddr(toks)
+}
 
-	return nil, nil
+func parseMailboxAddr(ts []token) (*MailboxAddr, error) {
+	ma := &MailboxAddr{}
+	return ma, nil
 }
