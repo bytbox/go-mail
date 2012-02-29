@@ -1,5 +1,5 @@
 // Package mail implements a parser for electronic mail messages as specified
-// in RFC2822.
+// in RFC5322.
 //
 // We allow both CRLF and LF to be used in the input, possibly mixed.
 package mail

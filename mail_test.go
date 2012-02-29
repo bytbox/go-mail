@@ -33,7 +33,7 @@ c
 `),
 		ret: RawMessage{
 			RawHeaders: []RawHeader{},
-			Body:       crlf(`ab
+			Body: crlf(`ab
 c
 `),
 		},
@@ -58,7 +58,7 @@ c: def
 				RawHeader{crlf("a"), crlf("b")},
 				RawHeader{crlf("c"), crlf("def hi")},
 			},
-			Body:       crlf(``),
+			Body: crlf(``),
 		},
 	},
 	parseRawTest{
@@ -74,7 +74,7 @@ hello, world
 				RawHeader{crlf("c"), crlf("d fdsa")},
 				RawHeader{crlf("ef"), crlf("as")},
 			},
-			Body:       crlf(`hello, world
+			Body: crlf(`hello, world
 `),
 		},
 	},
@@ -91,7 +91,7 @@ hello, world
 				RawHeader{[]byte("c"), []byte("d fdsa")},
 				RawHeader{[]byte("ef"), []byte("as")},
 			},
-			Body:       []byte(`hello, world
+			Body: []byte(`hello, world
 `),
 		},
 	},
@@ -116,9 +116,7 @@ type processTest struct {
 	ret  Message
 }
 
-var processTests = []processTest{
-
-}
+var processTests = []processTest{}
 
 func TestProcess(t *testing.T) {
 	for _, pt := range processTests {
@@ -136,9 +134,7 @@ type parseTest struct {
 	ret Message
 }
 
-var parseTests = []parseTest{
-
-}
+var parseTests = []parseTest{}
 
 func TestParse(t *testing.T) {
 	for _, pt := range parseTests {
