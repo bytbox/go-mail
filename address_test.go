@@ -43,11 +43,18 @@ var parseAddressTests = []parseAddressTest{
 	},
 	parseAddressTest{
 		`A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;`,
-		nil,
+		&GroupAddr{
+			`A Group`,
+			[]*MailboxAddr{
+				&MailboxAddr{`Ed Jones`, `c`, `a.test`},
+				&MailboxAddr{``, `joe`, `where.test`},
+				&MailboxAddr{`John`, `jdoe`, `one.test`},
+			},
+		},
 	},
 	parseAddressTest{
 		`Undisclosed recipients:;`,
-		nil,
+		&GroupAddr{`Undisclosed recipients`, []*MailboxAddr{}},
 	},
 }
 

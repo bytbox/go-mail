@@ -4,6 +4,7 @@ package mail
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 )
 
@@ -18,10 +19,19 @@ type MailboxAddr struct {
 }
 
 func (ma *MailboxAddr) String() string {
-	return ""
+	if ma.name == "" {
+		return fmt.Sprintf("%s@%s", ma.local, ma.domain)
+	}
+	return fmt.Sprintf("%s <%s@%s>", ma.name, ma.local, ma.domain)
 }
 
 type GroupAddr struct {
+	name  string
+	boxes []*MailboxAddr
+}
+
+func (ga *GroupAddr) String() string {
+	return ""
 }
 
 func ParseAddress(bs []byte) (Address, error) {
@@ -33,7 +43,32 @@ func ParseAddress(bs []byte) (Address, error) {
 	// If this is a group, it must end in a ";" token.
 	ltok := toks[len(toks)-1]
 	if len(ltok) == 1 && ltok[0] == ';' {
-		return nil, nil
+		ga := new(GroupAddr)
+		// we split on ':'
+		nts, rest, err := splitOn(toks, []byte{':'})
+		if err != nil {
+			return nil, err
+		}
+		for _, nt := range nts {
+			ga.name += string(nt) + " "
+		}
+		ga.name = strings.TrimSpace(ga.name)
+		ga.boxes = []*MailboxAddr{}
+
+		last := 0
+		something := false
+		for i, t := range rest {
+			if len(t) == 1 && (t[0] == ',' || t[0] == ';') && something {
+				ma, err := parseMailboxAddr(rest[last:i])
+				if err != nil {
+					return nil, err
+				}
+				ga.boxes = append(ga.boxes, ma)
+				last = i+1
+			}
+			something = true
+		}
+		return ga, nil
 	}
 	return parseMailboxAddr(toks)
 }
