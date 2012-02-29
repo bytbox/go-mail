@@ -15,31 +15,31 @@ type parseAddressTest struct {
 var parseAddressTests = []parseAddressTest{
 	parseAddressTest{
 		`"Joe Q. Public" <john.q.public@example.com>`,
-		&MailboxAddr{},
+		&MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
 	},
 	parseAddressTest{
 		`Mary Smith <mary@x.test>`,
-		&MailboxAddr{},
+		&MailboxAddr{`Mary Smith`, `mary`, `x.test`},
 	},
 	parseAddressTest{
 		`jdoe@example.org`,
-		&MailboxAddr{},
+		&MailboxAddr{``, `jdoe`, `example.org`},
 	},
 	parseAddressTest{
 		`Who? <one@y.test>`,
-		&MailboxAddr{},
+		&MailboxAddr{`Who?`, `one`, `y.test`},
 	},
 	parseAddressTest{
-		`<boss@&MailboxAddr{}.test>`,
-		&MailboxAddr{},
+		`<boss@nil.test>`,
+		&MailboxAddr{``, `boss`, `nil.test`},
 	},
 	parseAddressTest{
 		`"Giant; \"Big\" Box" <sysservices@example.net>`,
-		&MailboxAddr{},
+		&MailboxAddr{`"Giant; \"Big\" Box"`, `sysservices`, `example.net`},
 	},
 	parseAddressTest{
 		`Pete <pete@silly.example>`,
-		&MailboxAddr{},
+		&MailboxAddr{`Pete`, `pete`, `silly.example`},
 	},
 	parseAddressTest{
 		`A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;`,
