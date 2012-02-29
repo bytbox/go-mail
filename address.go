@@ -7,11 +7,9 @@ type Address interface {
 }
 
 type MailboxAddr struct {
-
 }
 
 type GroupAddr struct {
-
 }
 
 func ParseAddress(str string) (Address, error) {
