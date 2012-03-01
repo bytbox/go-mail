@@ -28,12 +28,6 @@ var parseAddressListTests = []parseAddressListTest{
 			&MailboxAddr{``, `boss`, `nil.test`},
 		},
 	},
-	parseAddressListTest{
-		[]byte(``),
-		[]Address{
-
-		},
-	},
 }
 
 func TestParseAddressList(t *testing.T) {
