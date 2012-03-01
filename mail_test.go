@@ -103,9 +103,9 @@ func TestParseRaw(t *testing.T) {
 		ret := pt.ret
 		act, err := ParseRaw(msg)
 		if err != nil {
-			t.Errorf("ParseRaw returned error for %#v", string(msg))
+			t.Errorf("ParseRaw returned error for %#V", string(msg))
 		} else if !reflect.DeepEqual(act, ret) {
-			t.Errorf("ParseRaw: incorrect result from %#v as %#v; expected %#v", string(msg), act, ret)
+			t.Errorf("ParseRaw: incorrect result from %#V as %#V; expected %#V", string(msg), act, ret)
 		}
 	}
 }
@@ -124,7 +124,7 @@ func TestProcess(t *testing.T) {
 		if err != nil {
 			t.Errorf("Parse returned error for %s", pt.name)
 		} else if !reflect.DeepEqual(act, pt.ret) {
-			t.Errorf("Parse: incorrect result from %#v as %#v; expected %#v", pt.name, act, pt.ret)
+			t.Errorf("Parse: incorrect result from %#V as %#V; expected %#V", pt.name, act, pt.ret)
 		}
 	}
 }
@@ -142,9 +142,9 @@ func TestParse(t *testing.T) {
 		ret := pt.ret
 		act, err := Parse(msg)
 		if err != nil {
-			t.Errorf("Parse returned error for %#v", string(msg))
+			t.Errorf("Parse returned error for %#V", string(msg))
 		} else if !reflect.DeepEqual(act, ret) {
-			t.Errorf("Parse: incorrect result from %#v as %#v; expected %#v", string(msg), act, ret)
+			t.Errorf("Parse: incorrect result from %#V as %#V; expected %#V", string(msg), act, ret)
 		}
 	}
 }

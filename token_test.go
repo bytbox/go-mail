@@ -35,14 +35,14 @@ func TestTokenize(t *testing.T) {
 	for _, tt := range tokenTests {
 		o, e := tokenize([]byte(tt.s))
 		if e != nil {
-			t.Errorf("tokenize returned error for %#v", tt.s)
+			t.Errorf("tokenize returned error for %#V", tt.s)
 		} else {
 			rt := []string{}
 			for _, tok := range o {
 				rt = append(rt, string(tok))
 			}
 			if !reflect.DeepEqual(rt, tt.t) {
-				t.Errorf("tokenize(%#v) gave %#v; expected %#v", tt.s, rt, tt.t)
+				t.Errorf("tokenize(%#V) gave %#V; expected %#V", tt.s, rt, tt.t)
 			}
 		}
 	}

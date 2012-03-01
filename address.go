@@ -39,7 +39,10 @@ func ParseAddress(bs []byte) (Address, error) {
 	if err != nil {
 		return nil, err
 	}
+	return parseAddress(toks)
+}
 
+func parseAddress(toks []token) (Address, error) {
 	// If this is a group, it must end in a ";" token.
 	ltok := toks[len(toks)-1]
 	if len(ltok) == 1 && ltok[0] == ';' {

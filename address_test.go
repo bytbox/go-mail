@@ -56,16 +56,20 @@ var parseAddressTests = []parseAddressTest{
 		`Undisclosed recipients:;`,
 		&GroupAddr{`Undisclosed recipients`, []*MailboxAddr{}},
 	},
+	parseAddressTest{
+		`Undisclosed recipients:      ;`,
+		&GroupAddr{`Undisclosed recipients`, []*MailboxAddr{}},
+	},
 }
 
 func TestParseAddress(t *testing.T) {
 	for _, pt := range parseAddressTests {
 		address, err := ParseAddress([]byte(pt.addrStr))
 		if err != nil {
-			t.Errorf("ParseAddress returned error for %#v", pt.addrStr)
+			t.Errorf("ParseAddress returned error for %#V", pt.addrStr)
 		} else if !reflect.DeepEqual(address, pt.addrRes) {
 			t.Errorf(
-				"ParseAddress: incorrect result for %#v: gave %#v; expected %#v",
+				"ParseAddress: incorrect result for %#V: gave %#V; expected %#V",
 				pt.addrStr, address, pt.addrRes)
 		}
 	}
