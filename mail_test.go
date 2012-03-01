@@ -134,7 +134,18 @@ type parseTest struct {
 	ret Message
 }
 
-var parseTests = []parseTest{}
+var parseTests = []parseTest{
+	parseTest{
+		crlf(`
+
+`),
+		Message{
+			[]Header{},
+			[]Header{},
+			"\r\n",
+		},
+	},
+}
 
 func TestParse(t *testing.T) {
 	for _, pt := range parseTests {

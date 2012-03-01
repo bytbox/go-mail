@@ -10,7 +10,8 @@ import (
 )
 
 type Message struct {
-	FullHeaders []Header
+	FullHeaders []Header // all headers
+	OptHeaders  []Header // unprocessed headers
 	Text        string
 }
 
@@ -27,6 +28,18 @@ func Parse(s []byte) (m Message, e error) {
 }
 
 func Process(r RawMessage) (m Message, e error) {
+	m.FullHeaders = []Header{}
+	m.OptHeaders = []Header{}
+	m.Text = string(r.Body) // TODO mime
+	for _, rh := range r.RawHeaders {
+		h := Header{string(rh.Key), string(rh.Value)}
+		m.FullHeaders = append(m.FullHeaders, h)
+		if false {
+
+		} else {
+			m.OptHeaders = append(m.OptHeaders, h)
+		}
+	}
 	return
 }
 

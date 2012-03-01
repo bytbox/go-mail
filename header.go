@@ -33,7 +33,3 @@ func parseAddressList(s []byte) ([]Address, error) {
 	}
 	return al, nil
 }
-
-func procHeaders(m *Message) error {
-	return nil
-}
