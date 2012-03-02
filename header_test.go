@@ -18,14 +18,14 @@ var parseAddressListTests = []parseAddressListTest{
 	parseAddressListTest{
 		[]byte(`"Joe Q. Public" <john.q.public@example.com>`),
 		[]Address{
-			&MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
+			MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
 		},
 	},
 	parseAddressListTest{
 		[]byte(`"Joe Q. Public" <john.q.public@example.com>, <boss@nil.test>`),
 		[]Address{
-			&MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
-			&MailboxAddr{``, `boss`, `nil.test`},
+			MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
+			MailboxAddr{``, `boss`, `nil.test`},
 		},
 	},
 }

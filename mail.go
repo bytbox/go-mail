@@ -19,6 +19,12 @@ type Message struct {
 
 	MessageId   string
 	Id          string
+	From        []Address
+	Sender      Address
+	ReplyTo     []Address
+	To          []Address
+	Cc          []Address
+	Bcc         []Address
 	Subject     string
 	Comments    []string
 	Keywords    []string
@@ -49,6 +55,18 @@ func Process(r RawMessage) (m Message, e error) {
 		case `Message-ID`:
 			m.MessageId = string(rh.Value)
 			m.Id = benc.EncodeToString(rh.Value)
+		case `From`:
+			m.From, e = parseAddressList(rh.Value)
+		case `Sender`:
+			m.Sender, e = ParseAddress(rh.Value)
+		case `Reply-To`:
+			m.ReplyTo, e = parseAddressList(rh.Value)
+		case `To`:
+			m.To, e = parseAddressList(rh.Value)
+		case `Cc`:
+			m.Cc, e = parseAddressList(rh.Value)
+		case `Bcc`:
+			m.Bcc, e = parseAddressList(rh.Value)
 		case `Subject`:
 			m.Subject = string(rh.Value)
 		case `Comments`:
@@ -61,6 +79,12 @@ func Process(r RawMessage) (m Message, e error) {
 		default:
 			m.OptHeaders = append(m.OptHeaders, h)
 		}
+		if e != nil {
+			return
+		}
+	}
+	if m.Sender == nil {
+		m.Sender = m.From[0]
 	}
 	return
 }

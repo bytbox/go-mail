@@ -15,50 +15,50 @@ type parseAddressTest struct {
 var parseAddressTests = []parseAddressTest{
 	parseAddressTest{
 		`"Joe Q. Public" <john.q.public@example.com>`,
-		&MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
+		MailboxAddr{`"Joe Q. Public"`, `john.q.public`, `example.com`},
 	},
 	parseAddressTest{
 		`Mary Smith <mary@x.test>`,
-		&MailboxAddr{`Mary Smith`, `mary`, `x.test`},
+		MailboxAddr{`Mary Smith`, `mary`, `x.test`},
 	},
 	parseAddressTest{
 		`jdoe@example.org`,
-		&MailboxAddr{``, `jdoe`, `example.org`},
+		MailboxAddr{``, `jdoe`, `example.org`},
 	},
 	parseAddressTest{
 		`Who? <one@y.test>`,
-		&MailboxAddr{`Who?`, `one`, `y.test`},
+		MailboxAddr{`Who?`, `one`, `y.test`},
 	},
 	parseAddressTest{
 		`<boss@nil.test>`,
-		&MailboxAddr{``, `boss`, `nil.test`},
+		MailboxAddr{``, `boss`, `nil.test`},
 	},
 	parseAddressTest{
 		`"Giant; \"Big\" Box" <sysservices@example.net>`,
-		&MailboxAddr{`"Giant; \"Big\" Box"`, `sysservices`, `example.net`},
+		MailboxAddr{`"Giant; \"Big\" Box"`, `sysservices`, `example.net`},
 	},
 	parseAddressTest{
 		`Pete <pete@silly.example>`,
-		&MailboxAddr{`Pete`, `pete`, `silly.example`},
+		MailboxAddr{`Pete`, `pete`, `silly.example`},
 	},
 	parseAddressTest{
 		`A Group:Ed Jones <c@a.test>,joe@where.test,John <jdoe@one.test>;`,
-		&GroupAddr{
+		GroupAddr{
 			`A Group`,
-			[]*MailboxAddr{
-				&MailboxAddr{`Ed Jones`, `c`, `a.test`},
-				&MailboxAddr{``, `joe`, `where.test`},
-				&MailboxAddr{`John`, `jdoe`, `one.test`},
+			[]MailboxAddr{
+				MailboxAddr{`Ed Jones`, `c`, `a.test`},
+				MailboxAddr{``, `joe`, `where.test`},
+				MailboxAddr{`John`, `jdoe`, `one.test`},
 			},
 		},
 	},
 	parseAddressTest{
 		`Undisclosed recipients:;`,
-		&GroupAddr{`Undisclosed recipients`, []*MailboxAddr{}},
+		GroupAddr{`Undisclosed recipients`, []MailboxAddr{}},
 	},
 	parseAddressTest{
 		`Undisclosed recipients:      ;`,
-		&GroupAddr{`Undisclosed recipients`, []*MailboxAddr{}},
+		GroupAddr{`Undisclosed recipients`, []MailboxAddr{}},
 	},
 }
 

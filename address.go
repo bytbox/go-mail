@@ -18,7 +18,7 @@ type MailboxAddr struct {
 	domain string
 }
 
-func (ma *MailboxAddr) String() string {
+func (ma MailboxAddr) String() string {
 	if ma.name == "" {
 		return fmt.Sprintf("%s@%s", ma.local, ma.domain)
 	}
@@ -27,10 +27,10 @@ func (ma *MailboxAddr) String() string {
 
 type GroupAddr struct {
 	name  string
-	boxes []*MailboxAddr
+	boxes []MailboxAddr
 }
 
-func (ga *GroupAddr) String() string {
+func (ga GroupAddr) String() string {
 	return ""
 }
 
@@ -56,7 +56,7 @@ func parseAddress(toks []token) (Address, error) {
 			ga.name += string(nt) + " "
 		}
 		ga.name = strings.TrimSpace(ga.name)
-		ga.boxes = []*MailboxAddr{}
+		ga.boxes = []MailboxAddr{}
 
 		last := 0
 		something := false
@@ -85,11 +85,11 @@ func splitOn(ts []token, s token) ([]token, []token, error) {
 	return nil, nil, errors.New("split token not found")
 }
 
-func parseMailboxAddr(ts []token) (ma *MailboxAddr, err error) {
+func parseMailboxAddr(ts []token) (ma MailboxAddr, err error) {
 	// We're either name-addr or an addr-spec. If we end in ">", then all
 	// characters up to "<" constitute the name. Otherwise, there is no
 	// name.
-	ma = &MailboxAddr{}
+	ma = MailboxAddr{}
 	ltok := ts[len(ts)-1]
 	if len(ltok) == 1 && ltok[0] == '>' {
 		var nts, ats []token
