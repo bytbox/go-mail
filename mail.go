@@ -31,6 +31,9 @@ type Message struct {
 	Comments    []string
 	Keywords    []string
 
+	InReply     []string
+	References  []string
+
 	Text        string
 }
 
@@ -55,8 +58,9 @@ func Process(r RawMessage) (m Message, e error) {
 		m.FullHeaders = append(m.FullHeaders, h)
 		switch string(rh.Key) {
 		case `Message-ID`:
-			m.MessageId = string(rh.Value)
-			m.Id = benc.EncodeToString(rh.Value)
+			v := bytes.Trim(rh.Value, `<>`)
+			m.MessageId = string(v)
+			m.Id = benc.EncodeToString(v)
 		case `Date`:
 			m.Date = ParseDate(string(rh.Value))
 		case `From`:
