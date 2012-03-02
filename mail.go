@@ -61,6 +61,16 @@ func Process(r RawMessage) (m Message, e error) {
 			v := bytes.Trim(rh.Value, `<>`)
 			m.MessageId = string(v)
 			m.Id = benc.EncodeToString(v)
+		case `In-Reply-To`:
+			ids := strings.Split(string(rh.Value), `,`)
+			for _, id := range ids {
+				m.InReply = append(m.InReply, strings.Trim(id, `<> `))
+			}
+		case `References`:
+			ids := strings.Split(string(rh.Value), `,`)
+			for _, id := range ids {
+				m.References = append(m.References, strings.Trim(id, `<> `))
+			}
 		case `Date`:
 			m.Date = ParseDate(string(rh.Value))
 		case `From`:
