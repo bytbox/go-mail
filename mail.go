@@ -9,6 +9,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"strings"
+	"time"
 )
 
 var benc = base64.URLEncoding
@@ -19,6 +20,7 @@ type Message struct {
 
 	MessageId   string
 	Id          string
+	Date        time.Time
 	From        []Address
 	Sender      Address
 	ReplyTo     []Address
@@ -44,6 +46,8 @@ func Parse(s []byte) (m Message, e error) {
 	return Process(r)
 }
 
+const RFC5322Date = `02 Jan 2006 15:04:05 -0700`
+
 func Process(r RawMessage) (m Message, e error) {
 	m.FullHeaders = []Header{}
 	m.OptHeaders = []Header{}
@@ -56,6 +60,7 @@ func Process(r RawMessage) (m Message, e error) {
 			m.MessageId = string(rh.Value)
 			m.Id = benc.EncodeToString(rh.Value)
 		case `Date`:
+			m.Date, e = time.Parse(RFC5322Date, string(rh.Value))
 		case `From`:
 			m.From, e = parseAddressList(rh.Value)
 		case `Sender`:

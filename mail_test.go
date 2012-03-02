@@ -157,20 +157,6 @@ G'day, mate.
 			Text: "G'day, mate.\r\n",
 		},
 	},
-	parseTest{
-		crlf(`Date: 02 Mar 2012 00:14:19 -0500
-Message-ID: <1330665259@localhost.localdomain>
-
-Message text.`),
-		Message{
-			FullHeaders: []Header{
-				Header{`Date`, `02 Mar 2012 00:14:19 -0500`},
-				Header{`Message-ID`, `<1330665259@localhost.localdomain>`},
-			},
-			OptHeaders: []Header{},
-			Text: "Message text.",
-		},
-	},
 }
 
 func TestParse(t *testing.T) {
@@ -179,7 +165,8 @@ func TestParse(t *testing.T) {
 		ret := pt.ret
 		act, err := Parse(msg)
 		if err != nil {
-			t.Errorf("Parse returned error for %#V", string(msg))
+			t.Errorf("Parse returned error for %#v\n", string(msg))
+			t.Errorf("Error: %s", err.Error())
 		} else if !reflect.DeepEqual(act, ret) {
 			t.Errorf("Parse: incorrect result from %#V as %#V; expected %#V", string(msg), act, ret)
 		}
