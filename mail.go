@@ -55,6 +55,7 @@ func Process(r RawMessage) (m Message, e error) {
 		case `Message-ID`:
 			m.MessageId = string(rh.Value)
 			m.Id = benc.EncodeToString(rh.Value)
+		case `Date`:
 		case `From`:
 			m.From, e = parseAddressList(rh.Value)
 		case `Sender`:
@@ -83,7 +84,7 @@ func Process(r RawMessage) (m Message, e error) {
 			return
 		}
 	}
-	if m.Sender == nil {
+	if m.Sender == nil && len(m.From) > 0 {
 		m.Sender = m.From[0]
 	}
 	return

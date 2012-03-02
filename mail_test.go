@@ -157,6 +157,20 @@ G'day, mate.
 			Text: "G'day, mate.\r\n",
 		},
 	},
+	parseTest{
+		crlf(`Date: 02 Mar 2012 00:14:19 -0500
+Message-ID: <1330665259@localhost.localdomain>
+
+Message text.`),
+		Message{
+			FullHeaders: []Header{
+				Header{`Date`, `02 Mar 2012 00:14:19 -0500`},
+				Header{`Message-ID`, `<1330665259@localhost.localdomain>`},
+			},
+			OptHeaders: []Header{},
+			Text: "Message text.",
+		},
+	},
 }
 
 func TestParse(t *testing.T) {

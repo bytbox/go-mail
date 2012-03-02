@@ -10,12 +10,20 @@ import (
 
 type Address interface {
 	String() string
+	Name()   string
 }
 
 type MailboxAddr struct {
 	name   string
 	local  string
 	domain string
+}
+
+func (ma MailboxAddr) Name() string {
+	if ma.name == "" {
+		return fmt.Sprintf("%s@%s", ma.local, ma.domain)
+	}
+	return ma.name
 }
 
 func (ma MailboxAddr) String() string {
@@ -28,6 +36,10 @@ func (ma MailboxAddr) String() string {
 type GroupAddr struct {
 	name  string
 	boxes []MailboxAddr
+}
+
+func (ga GroupAddr) Name() string {
+	return ga.name
 }
 
 func (ga GroupAddr) String() string {
@@ -46,7 +58,7 @@ func parseAddress(toks []token) (Address, error) {
 	// If this is a group, it must end in a ";" token.
 	ltok := toks[len(toks)-1]
 	if len(ltok) == 1 && ltok[0] == ';' {
-		ga := new(GroupAddr)
+		ga := GroupAddr{}
 		// we split on ':'
 		nts, rest, err := splitOn(toks, []byte{':'})
 		if err != nil {
