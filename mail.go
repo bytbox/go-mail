@@ -14,6 +14,7 @@ type Message struct {
 	FullHeaders []Header // all headers
 	OptHeaders  []Header // unprocessed headers
 
+	Id          string
 	Subject     string
 	Comments    []string
 	Keywords    []string
@@ -41,6 +42,8 @@ func Process(r RawMessage) (m Message, e error) {
 		h := Header{string(rh.Key), string(rh.Value)}
 		m.FullHeaders = append(m.FullHeaders, h)
 		switch string(rh.Key) {
+		case `Message-ID`:
+			m.Id = string(rh.Value)
 		case `Subject`:
 			m.Subject = string(rh.Value)
 		case `Comments`:
