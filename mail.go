@@ -6,14 +6,18 @@ package mail
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"strings"
 )
+
+var benc = base64.URLEncoding
 
 type Message struct {
 	FullHeaders []Header // all headers
 	OptHeaders  []Header // unprocessed headers
 
+	MessageId   string
 	Id          string
 	Subject     string
 	Comments    []string
@@ -43,7 +47,8 @@ func Process(r RawMessage) (m Message, e error) {
 		m.FullHeaders = append(m.FullHeaders, h)
 		switch string(rh.Key) {
 		case `Message-ID`:
-			m.Id = string(rh.Value)
+			m.MessageId = string(rh.Value)
+			m.Id = benc.EncodeToString(rh.Value)
 		case `Subject`:
 			m.Subject = string(rh.Value)
 		case `Comments`:
