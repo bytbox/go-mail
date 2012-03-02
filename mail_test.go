@@ -140,9 +140,21 @@ var parseTests = []parseTest{
 
 `),
 		Message{
-			[]Header{},
-			[]Header{},
-			"\r\n",
+			FullHeaders: []Header{},
+			OptHeaders: []Header{},
+			Text: "\r\n",
+		},
+	},
+	parseTest{
+		crlf(`Subject: Hello, world
+
+G'day, mate.
+`),
+		Message{
+			FullHeaders: []Header{Header{"Subject", "Hello, world"}},
+			OptHeaders: []Header{},
+			Subject: "Hello, world",
+			Text: "G'day, mate.\r\n",
 		},
 	},
 }

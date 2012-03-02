@@ -7,11 +7,17 @@ package mail
 import (
 	"bytes"
 	"errors"
+	"strings"
 )
 
 type Message struct {
 	FullHeaders []Header // all headers
 	OptHeaders  []Header // unprocessed headers
+
+	Subject     string
+	Comments    []string
+	Keywords    []string
+
 	Text        string
 }
 
@@ -34,9 +40,17 @@ func Process(r RawMessage) (m Message, e error) {
 	for _, rh := range r.RawHeaders {
 		h := Header{string(rh.Key), string(rh.Value)}
 		m.FullHeaders = append(m.FullHeaders, h)
-		if false {
-
-		} else {
+		switch string(rh.Key) {
+		case `Subject`:
+			m.Subject = string(rh.Value)
+		case `Comments`:
+			m.Comments = append(m.Comments, string(rh.Value))
+		case `Keywords`:
+			ks := strings.Split(string(rh.Value), ",")
+			for _, k := range ks {
+				m.Keywords = append(m.Keywords, strings.TrimSpace(k))
+			}
+		default:
 			m.OptHeaders = append(m.OptHeaders, h)
 		}
 	}
