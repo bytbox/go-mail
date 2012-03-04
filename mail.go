@@ -49,6 +49,13 @@ func Parse(s []byte) (m Message, e error) {
 	return Process(r)
 }
 
+func trunc(s string, i int) string {
+	if len(s) < i {
+		return s
+	}
+	return s[0:i]
+}
+
 func Process(r RawMessage) (m Message, e error) {
 	m.FullHeaders = []Header{}
 	m.OptHeaders = []Header{}
@@ -60,7 +67,7 @@ func Process(r RawMessage) (m Message, e error) {
 		case `Message-ID`:
 			v := bytes.Trim(rh.Value, `<>`)
 			m.MessageId = string(v)
-			m.Id = benc.EncodeToString(v)
+			m.Id = trunc(benc.EncodeToString(v), 64)
 		case `In-Reply-To`:
 			ids := strings.Split(string(rh.Value), ` `)
 			for _, id := range ids {
