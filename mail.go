@@ -6,6 +6,7 @@ package mail
 
 import (
 	"bytes"
+	"crypto/sha1"
 	"encoding/base64"
 	"errors"
 	"strings"
@@ -13,6 +14,10 @@ import (
 )
 
 var benc = base64.URLEncoding
+
+func mkId(s []byte) string {
+	return benc.EncodeToString(sha1.New().Sum(s))[0:20]
+}
 
 type Message struct {
 	FullHeaders []Header // all headers
@@ -49,13 +54,6 @@ func Parse(s []byte) (m Message, e error) {
 	return Process(r)
 }
 
-func trunc(s string, i int) string {
-	if len(s) < i {
-		return s
-	}
-	return s[0:i]
-}
-
 func Process(r RawMessage) (m Message, e error) {
 	m.FullHeaders = []Header{}
 	m.OptHeaders = []Header{}
@@ -67,7 +65,7 @@ func Process(r RawMessage) (m Message, e error) {
 		case `Message-ID`:
 			v := bytes.Trim(rh.Value, `<>`)
 			m.MessageId = string(v)
-			m.Id = trunc(benc.EncodeToString(v), 64)
+			m.Id = mkId(v)
 		case `In-Reply-To`:
 			ids := strings.Split(string(rh.Value), ` `)
 			for _, id := range ids {
