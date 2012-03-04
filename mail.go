@@ -67,12 +67,12 @@ func Process(r RawMessage) (m Message, e error) {
 			m.MessageId = string(v)
 			m.Id = mkId(v)
 		case `In-Reply-To`:
-			ids := strings.Split(string(rh.Value), ` `)
+			ids := strings.Fields(string(rh.Value))
 			for _, id := range ids {
 				m.InReply = append(m.InReply, strings.Trim(id, `<> `))
 			}
 		case `References`:
-			ids := strings.Split(string(rh.Value), ` `)
+			ids := strings.Fields(string(rh.Value))
 			for _, id := range ids {
 				m.References = append(m.References, strings.Trim(id, `<> `))
 			}
