@@ -16,7 +16,11 @@ import (
 var benc = base64.URLEncoding
 
 func mkId(s []byte) string {
-	return benc.EncodeToString(sha1.New().Sum(s))[0:20]
+	h := sha1.New()
+	h.Write(s)
+	hash := h.Sum(nil)
+	ed := benc.EncodeToString(hash)
+	return ed[0:20]
 }
 
 type Message struct {
