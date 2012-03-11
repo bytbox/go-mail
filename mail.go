@@ -46,7 +46,10 @@ type HeaderInfo struct {
 
 type Message struct {
 	HeaderInfo
-	Text        string
+
+	Text  string
+	Body  []byte
+	Parts []Part
 }
 
 type Header struct {
