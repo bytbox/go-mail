@@ -23,7 +23,7 @@ func mkId(s []byte) string {
 	return ed[0:20]
 }
 
-type Message struct {
+type HeaderInfo struct {
 	FullHeaders []Header // all headers
 	OptHeaders  []Header // unprocessed headers
 
@@ -42,7 +42,10 @@ type Message struct {
 
 	InReply     []string
 	References  []string
+}
 
+type Message struct {
+	HeaderInfo
 	Text        string
 }
 

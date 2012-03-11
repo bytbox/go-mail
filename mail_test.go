@@ -140,8 +140,10 @@ var parseTests = []parseTest{
 
 `),
 		Message{
-			FullHeaders: []Header{},
-			OptHeaders: []Header{},
+			HeaderInfo: HeaderInfo{
+				FullHeaders: []Header{},
+				OptHeaders: []Header{},
+			},
 			Text: "\r\n",
 		},
 	},
@@ -151,9 +153,11 @@ var parseTests = []parseTest{
 G'day, mate.
 `),
 		Message{
-			FullHeaders: []Header{Header{"Subject", "Hello, world"}},
-			OptHeaders: []Header{},
-			Subject: "Hello, world",
+			HeaderInfo: HeaderInfo{
+				FullHeaders: []Header{Header{"Subject", "Hello, world"}},
+				OptHeaders: []Header{},
+				Subject: "Hello, world",
+			},
 			Text: "G'day, mate.\r\n",
 		},
 	},
