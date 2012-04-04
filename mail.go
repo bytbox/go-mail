@@ -39,6 +39,7 @@ type HeaderInfo struct {
 	Subject     string
 	Comments    []string
 	Keywords    []string
+	ContentType string
 
 	InReply     []string
 	References  []string
@@ -67,11 +68,12 @@ func Parse(s []byte) (m Message, e error) {
 func Process(r RawMessage) (m Message, e error) {
 	m.FullHeaders = []Header{}
 	m.OptHeaders = []Header{}
-	m.Text = string(r.Body) // TODO mime
 	for _, rh := range r.RawHeaders {
 		h := Header{string(rh.Key), string(rh.Value)}
 		m.FullHeaders = append(m.FullHeaders, h)
 		switch string(rh.Key) {
+		case `Content-Type`:
+			m.ContentType = string(rh.Value)
 		case `Message-ID`:
 			v := bytes.Trim(rh.Value, `<>`)
 			m.MessageId = string(v)
@@ -79,8 +81,7 @@ func Process(r RawMessage) (m Message, e error) {
 		case `In-Reply-To`:
 			ids := strings.Fields(string(rh.Value))
 			for _, id := range ids {
-				m.InReply = append(m.InReply, strings.Trim(id, `<> `))
-			}
+				m.InReply = append(m.InReply, strings.Trim(id, `<> `)) }
 		case `References`:
 			ids := strings.Fields(string(rh.Value))
 			for _, id := range ids {
@@ -118,6 +119,16 @@ func Process(r RawMessage) (m Message, e error) {
 	}
 	if m.Sender == nil && len(m.From) > 0 {
 		m.Sender = m.From[0]
+	}
+
+	if m.ContentType != `` {
+		parts, er := parseBody(m.ContentType, r.Body)
+		if er != nil { e = er; return }
+		m.Parts = parts
+		m.ContentType = parts[0].Type
+		m.Text = string(parts[0].Data)
+	} else {
+		m.Text = string(r.Body)
 	}
 	return
 }
