@@ -12,6 +12,6 @@ type Part struct {
 // present; otherwise, it will contain a single entry, with the entire (raw)
 // message contents. The returned text will be an appropriate string
 // representation of the first part of the message.
-func ParseBody(ct string, body []byte) (text string, parts []Part) {
+func ParseBody(ct string, body []byte) (text string, textct string, parts []Part) {
 	return
 }
