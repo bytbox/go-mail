@@ -2,6 +2,10 @@
 
 package mail
 
+import (
+	"strings"
+)
+
 func split(ts []token, s token) [][]token {
 	r, l := [][]token{}, 0
 	for i, t := range ts {
@@ -33,3 +37,11 @@ func parseAddressList(s []byte) ([]Address, error) {
 	}
 	return al, nil
 }
+
+func decodeRFC2047(word string) string {
+	if strings.HasPrefix(word, "=?") && strings.HasSuffix(word, "?=") && strings.Count(word, "?") == 4 {
+		return ""
+	}
+	return word
+}
+
